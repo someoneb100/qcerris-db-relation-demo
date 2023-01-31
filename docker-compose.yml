@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_demo
+    environment:
+      - POSTGRES_USER=demo
+      - POSTGRES_DB=demo
+      - POSTGRES_PASSWORD=demo
+      - PG_DATA=/demo/data
+    volumes:
+      - postgresdata:/demo/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@qcerris.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "8080:80"
+    links:
+      - postgres
+
+volumes:
+  postgresdata:
