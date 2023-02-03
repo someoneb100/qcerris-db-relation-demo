@@ -11,6 +11,8 @@ services:
       - PG_DATA=/demo/data
     volumes:
       - postgresdata:/demo/data
+    ports:
+      - 12345:5432
   pgadmin:
     image: dpage/pgadmin4
     environment:

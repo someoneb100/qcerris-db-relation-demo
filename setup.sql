@@ -94,7 +94,8 @@ CREATE TABLE store_product (
 CREATE TABLE manager (
     manager_id integer PRIMARY KEY,
     manager_name varchar(50) NOT NULL,
-    email varchar(50) NOT NULL
+    email varchar(50) NOT NULL,
+    salary integer NOT NULL
 );
 
 
@@ -179,6 +180,38 @@ CREATE TABLE parking_lot (
 );
 
 
+-- dodajemo tabelu cistac
+
+CREATE TABLE janitor (
+    janitor_id integer PRIMARY KEY,
+    name varchar(50),
+    salary integer NOT NULL
+);
+
+-- svako parkiraliste ima tacno jednog cistaca
+-- svaki cistac cisti tacno jedno parkiraliste
+-- 'jedan na jedan' (1-1)
+-- u obe tabele dodamo kljuc iz druge kao strani kljuc
+-- poblem: ne moze se uneti jedan novi red bez drugog
+-- provera na nivou transakcije umesto operacije
+
+
+ALTER TABLE parking_lot
+ADD COLUMN janitor_id integer NOT NULL UNIQUE
+CONSTRAINT parking_lot_fk_janitor
+REFERENCES janitor (janitor_id)
+ON UPDATE CASCADE ON DELETE CASCADE
+DEFERRABLE INITIALLY DEFERRED;
+
+ALTER TABLE janitor
+ADD COLUMN parkong_lot_id integer NOT NULL UNIQUE,
+ADD CONSTRAINT janitor_fk_parking_lot
+FOREIGN KEY (parking_lot_id)
+REFERENCES parking_lot (parking_lot_id)
+ON UPDATE CASCADE ON DELETE CASCADE
+DEFERRABLE INITIALLY DEFERRED;
+
+
 -- parking mesto pripada tacno jednom parkiralistu
 -- parkiraliste ima vise parking mesta ali mora imati bar jedno
 -- 'jedan na bar jedan' (1-1..*)
@@ -188,8 +221,7 @@ CREATE TABLE parking_lot (
 -- primarni kljuc proglasimo
 -- kao strani na drugu tabelu
 -- i dodajemo jedno polje ka drugoj tabeli
--- poblem: ne moze se uneti jedan novi red bez drugog
--- provera na nivou transakcije umesto operacije
+-- provera se izvrsava na kraju transakcije
 
 
 ALTER TABLE parking_space
